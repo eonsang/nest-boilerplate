@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# ✅ 모듈 이름 인자 확인
+if [ -z "$1" ]; then
+  echo "❌ 모듈명을 입력해주세요. 예: ./generate-module.sh auth"
+  exit 1
+fi
+
+MODULE=$1
+CAP_MODULE="$(tr '[:lower:]' '[:upper:]' <<< ${MODULE:0:1})${MODULE:1}" # auth → Auth
+BASE_DIR=src/$MODULE
+
+echo "🚀 [$MODULE] 모듈 구조 생성 시작..."
+
+# ✅ 디렉토리 목록 정의
+DIRS=(
+  "$BASE_DIR/presentation/http/rest/dto"
+  "$BASE_DIR/presentation/cron"
+  "$BASE_DIR/presentation/queue"
+  "$BASE_DIR/application/dto/req"
+  "$BASE_DIR/application/dto/res"
+  "$BASE_DIR/application/service"
+  "$BASE_DIR/application/error"
+  "$BASE_DIR/domain/entity"
+  "$BASE_DIR/domain/service"
+  "$BASE_DIR/domain/error"
+  "$BASE_DIR/domain/repository"
+  "$BASE_DIR/infra/repository"
+  "$BASE_DIR/infra/api"
+  "$BASE_DIR/infra/mapper"
+  "$BASE_DIR/infra/queue"
+)
+
+# ✅ 디렉토리 생성 + index.ts 추가
+for dir in "${DIRS[@]}"; do
+  mkdir -p "$dir"
+  touch "$dir/index.ts"
+done
+
+
+# ✅ controller 생성
+cat <<EOF > "$BASE_DIR/presentation/http/rest/${MODULE}.controller.ts"
+import { Controller, Get } from '@nestjs/common';
+@Controller('${MODULE}')
+export class ${CAP_MODULE}Controller {
+  @Get()
+  register() {
+    return { message: 'Ok' };
+  }
+}
+EOF
+
+# ✅ module.ts 생성
+cat <<EOF > "$BASE_DIR/${MODULE}.module.ts"
+import { Module } from '@nestjs/common';
+import { ${CAP_MODULE}Controller } from './presentation/http/rest/${MODULE}.controller';
+@Module({
+  imports: [],
+  providers: [],
+  controllers: [${CAP_MODULE}Controller],
+  exports: [],
+})
+export class ${CAP_MODULE}Module {}
+EOF
+
+echo "✅ [$MODULE] 모듈 생성 완료! 🎉"
