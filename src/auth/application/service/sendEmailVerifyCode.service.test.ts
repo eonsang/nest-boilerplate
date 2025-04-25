@@ -4,13 +4,11 @@ import { USER_REPOSITORY, UserRepository } from 'src/auth/domain/repository';
 import { faker } from '@faker-js/faker';
 import { AuthError } from '../error';
 import {
-  EMAIL_VERIFICATION_STORE,
-  EmailVerificationStoreOutPort,
-} from '../port/out/emailVerificationStore.outPort';
-import {
   EMAIL_SENDER,
   EmailSenderOutPort,
-} from '../port/out/emailSender.outPort';
+  EMAIL_VERIFICATION_STORE,
+  EmailVerificationStoreOutPort,
+} from '../port/out';
 
 jest.mock('random-string-generator', () => {
   return jest.fn().mockReturnValue('683823');
