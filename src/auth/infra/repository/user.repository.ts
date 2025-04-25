@@ -7,10 +7,10 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 export class UserPrismaRepository implements UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async existsByEmail({ email }: UserEmail) {
+  async existsByEmail(email: UserEmail) {
     const user = await this.prisma.user.findUnique({
       where: {
-        email,
+        email: email.value,
       },
     });
     return !!user;

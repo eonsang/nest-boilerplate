@@ -3,7 +3,7 @@ import { Result, err, ok } from 'neverthrow';
 export class EmailVerifyCode {
   private constructor(private readonly _code: string) {}
 
-  get code(): string {
+  get value(): string {
     return this._code;
   }
 

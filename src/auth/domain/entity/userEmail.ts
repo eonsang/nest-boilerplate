@@ -4,7 +4,7 @@ import { err, ok, Result } from 'neverthrow';
 export class UserEmail {
   private constructor(private readonly _email: string) {}
 
-  get email(): string {
+  get value(): string {
     return this._email;
   }
 

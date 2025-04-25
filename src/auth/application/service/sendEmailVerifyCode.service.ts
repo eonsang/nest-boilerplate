@@ -37,13 +37,13 @@ export class SendEmailVerifyCodeService {
     }
 
     await this.emailVerificationStore.save(
-      userEmail.value.email,
-      emailVerifyCode.value.code,
+      userEmail.value,
+      emailVerifyCode.value,
     );
 
     await this.emailSender.sendEmailVerifyCode(
-      userEmail.value.email,
-      emailVerifyCode.value.code,
+      userEmail.value,
+      emailVerifyCode.value,
     );
 
     return ok(true);

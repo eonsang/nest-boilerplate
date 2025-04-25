@@ -1,5 +1,7 @@
+import { EmailVerifyCode, UserEmail } from 'src/auth/domain/entity';
+
 export const EMAIL_SENDER = Symbol('EMAIL_SENDER');
 
 export interface EmailSenderOutPort {
-  sendEmailVerifyCode(email: string, code: string): Promise<void>;
+  sendEmailVerifyCode(email: UserEmail, code: EmailVerifyCode): Promise<void>;
 }

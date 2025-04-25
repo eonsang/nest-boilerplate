@@ -9,6 +9,7 @@ import {
   EMAIL_VERIFICATION_STORE,
   EmailVerificationStoreOutPort,
 } from '../port/out';
+import { EmailVerifyCode, UserEmail } from 'src/auth/domain/entity';
 
 jest.mock('random-string-generator', () => {
   return jest.fn().mockReturnValue('683823');
@@ -75,16 +76,26 @@ describe('SendEmailVerifyCodeService', () => {
 
   it(`이메일이 발송되고, true를 응답한다.`, async () => {
     const email = faker.internet.email();
+
+    const userEmail = UserEmail.create(email);
+    const emailVerifyCode = EmailVerifyCode.create('683823');
+
+    if (userEmail.isErr()) throw new Error('throw error');
+    if (emailVerifyCode.isErr()) throw new Error('throw error');
+
     jest.spyOn(userRepository, 'existsByEmail').mockResolvedValue(false);
 
     const result = await service.execute(email);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    expect(emailVerificationStore.save).toHaveBeenCalledWith(email, '683823');
+    expect(emailVerificationStore.save).toHaveBeenCalledWith(
+      userEmail.value,
+      emailVerifyCode.value,
+    );
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(emailSender.sendEmailVerifyCode).toHaveBeenCalledWith(
-      email,
-      '683823',
+      userEmail.value,
+      emailVerifyCode.value,
     );
 
     expect(result.isOk()).toBe(true);
