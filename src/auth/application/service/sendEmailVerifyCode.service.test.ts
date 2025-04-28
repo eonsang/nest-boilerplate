@@ -34,7 +34,7 @@ describe('SendEmailVerifyCodeService', () => {
         {
           provide: EMAIL_VERIFICATION_STORE,
           useValue: {
-            save: jest.fn(),
+            saveVerificationCode: jest.fn(),
           },
         },
         {
@@ -88,7 +88,7 @@ describe('SendEmailVerifyCodeService', () => {
     const result = await service.execute(email);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    expect(emailVerificationStore.save).toHaveBeenCalledWith(
+    expect(emailVerificationStore.saveVerificationCode).toHaveBeenCalledWith(
       userEmail.value,
       emailVerifyCode.value,
     );
