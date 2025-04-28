@@ -26,7 +26,8 @@ export class SendEmailVerifyCodeService {
       return err(AuthError.INVALID_EMAIL);
     }
 
-    const emailVerifyCode = EmailVerifyCode.create(random(6, 'numeric'));
+    const randomCode = random(6, 'numeric');
+    const emailVerifyCode = EmailVerifyCode.create(randomCode);
     if (emailVerifyCode.isErr()) {
       return err(AuthError.INVALID_CODE);
     }
@@ -36,7 +37,7 @@ export class SendEmailVerifyCodeService {
       return err(AuthError.EXISTS_EMAIL);
     }
 
-    await this.emailVerificationStore.save(
+    await this.emailVerificationStore.saveVerificationCode(
       userEmail.value,
       emailVerifyCode.value,
     );
