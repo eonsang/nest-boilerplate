@@ -10,6 +10,7 @@ import {
 } from '../port/out';
 import { UserEmail, EmailVerifyCode } from 'src/auth/domain/entity';
 import { USER_REPOSITORY, UserRepository } from 'src/auth/domain/repository';
+import { Transactional } from '@nestjs-cls/transactional';
 
 @Injectable()
 export class SendEmailVerifyCodeService {
@@ -20,6 +21,7 @@ export class SendEmailVerifyCodeService {
     private readonly emailVerificationStore: EmailVerificationStoreOutPort,
   ) {}
 
+  @Transactional()
   async execute(email: string): Promise<Result<boolean, AuthError>> {
     const userEmail = UserEmail.create(email);
     if (userEmail.isErr()) {

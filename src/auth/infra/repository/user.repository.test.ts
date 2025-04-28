@@ -4,6 +4,9 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { UserEmail } from 'src/auth/domain/entity';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { faker } from '@faker-js/faker/.';
+import { ClsModule } from 'nestjs-cls';
+import { ClsPluginTransactional } from '@nestjs-cls/transactional';
+import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 
 describe('UserPrismaRepository', () => {
   let repository: UserPrismaRepository;
@@ -12,7 +15,19 @@ describe('UserPrismaRepository', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule],
+      imports: [
+        ClsModule.forRoot({
+          global: true,
+          plugins: [
+            new ClsPluginTransactional({
+              imports: [PrismaModule],
+              adapter: new TransactionalAdapterPrisma({
+                prismaInjectionToken: PrismaService,
+              }),
+            }),
+          ],
+        }),
+      ],
       providers: [UserPrismaRepository],
     }).compile();
 

@@ -15,6 +15,10 @@ jest.mock('random-string-generator', () => {
   return jest.fn().mockReturnValue('683823');
 });
 
+jest.mock('@nestjs-cls/transactional', () => ({
+  Transactional: () => jest.fn(),
+}));
+
 describe('SendEmailVerifyCodeService', () => {
   let service: SendEmailVerifyCodeService;
   let userRepository: UserRepository;

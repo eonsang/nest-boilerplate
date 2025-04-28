@@ -1,3 +1,5 @@
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable } from '@nestjs/common';
 import { UserEmail } from 'src/auth/domain/entity';
 import { UserRepository } from 'src/auth/domain/repository';
@@ -5,14 +7,18 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 
 @Injectable()
 export class UserPrismaRepository implements UserRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly txHost: TransactionHost<
+      TransactionalAdapterPrisma<PrismaService>
+    >,
+  ) {}
 
   async existsByEmail(email: UserEmail) {
-    const user = await this.prisma.user.findUnique({
+    const result = await this.txHost.tx.user.findUnique({
       where: {
         email: email.value,
       },
     });
-    return !!user;
+    return !!result;
   }
 }
