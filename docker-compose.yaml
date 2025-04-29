@@ -11,19 +11,19 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     volumes:
-      - ./.docker/postgres_data:/var/lib/postgresql/data
+      - ./.docker/postgres:/var/lib/postgresql/data
     restart: always
 
   redis:
     image: redis:latest
-    container_name: redis_test
+    container_name: redis
     ports:
       - 6379:6379
     labels:
       - 'name=redis'
       - 'mode=standalone'
     volumes:
-      - ./redis/data:/data
-      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
+      - ./.docker/redis/data:/data
+      - ./.docker/redis/conf/redis.conf:/usr/local/conf/redis.conf
     restart: always
     command: redis-server /usr/local/conf/redis.conf
