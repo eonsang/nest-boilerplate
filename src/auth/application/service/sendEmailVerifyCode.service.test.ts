@@ -60,7 +60,7 @@ describe('SendEmailVerifyCodeService', () => {
     emailSender = module.get<EmailSenderOutPort>(EMAIL_SENDER);
   });
 
-  it(`잘못된 이메일 형식이면, 오류를 응답한다. (${AuthError.INVALID_EMAIL.code})`, async () => {
+  it(`should return err(INVALID_EMAIL) when invalid email`, async () => {
     const email = 'invalid-email';
     const result = await service.execute(email);
 
@@ -68,7 +68,7 @@ describe('SendEmailVerifyCodeService', () => {
     expect(result._unsafeUnwrapErr()).toBe(AuthError.INVALID_EMAIL);
   });
 
-  it(`이미 가입된 이메일이면, 오류를 응답한다. (${AuthError.EXISTS_EMAIL.code})`, async () => {
+  it(`should return err(EXISTS_EMAIL) when email is already registered`, async () => {
     const email = faker.internet.email();
     jest.spyOn(userRepository, 'existsByEmail').mockResolvedValue(true);
 
@@ -78,7 +78,7 @@ describe('SendEmailVerifyCodeService', () => {
     expect(result._unsafeUnwrapErr()).toBe(AuthError.EXISTS_EMAIL);
   });
 
-  it(`이메일이 발송되고, true를 응답한다.`, async () => {
+  it(`should send email and return true`, async () => {
     const email = faker.internet.email();
 
     const userEmail = UserEmail.create(email);

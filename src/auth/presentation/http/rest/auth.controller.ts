@@ -1,13 +1,38 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
-import { SendEmailVerifyCodeService } from 'src/auth/application/service';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+} from '@nestjs/common';
+import {
+  CheckDuplicateEmailService,
+  SendEmailVerifyCodeService,
+} from 'src/auth/application/service';
+import { CheckDuplicateEmailDto } from './dto/checkDuplicateEmail.dto';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly sendEmailVerifyCodeService: SendEmailVerifyCodeService,
+    private readonly checkDuplicateEmailService: CheckDuplicateEmailService,
   ) {}
 
-  @Post('email-verify-code')
+  @ApiOperation({ summary: '이메일 중복 확인' })
+  @Get('check-duplicate-email')
+  async checkDuplicateEmail(@Query() query: CheckDuplicateEmailDto) {
+    const response = await this.checkDuplicateEmailService.execute(query.email);
+    if (response.isErr()) {
+      throw new BadRequestException(response.error.code);
+    }
+
+    return response.value;
+  }
+
+  @ApiOperation({ summary: '이메일 인증 코드 발송' })
+  @Post('send-email-verify-code')
   async sendEmailVerifyCode(@Body() body: { email: string }) {
     const response = await this.sendEmailVerifyCodeService.execute(body.email);
     if (response.isErr()) {
