@@ -10,8 +10,8 @@ import {
   CheckDuplicateEmailService,
   SendEmailVerifyCodeService,
 } from 'src/auth/application/service';
-import { CheckDuplicateEmailDto } from './dto/checkDuplicateEmail.dto';
 import { ApiOperation } from '@nestjs/swagger';
+import { CheckDuplicateEmailDto, SendEmailVerifyCodeDto } from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -33,7 +33,7 @@ export class AuthController {
 
   @ApiOperation({ summary: '이메일 인증 코드 발송' })
   @Post('send-email-verify-code')
-  async sendEmailVerifyCode(@Body() body: { email: string }) {
+  async sendEmailVerifyCode(@Body() body: SendEmailVerifyCodeDto) {
     const response = await this.sendEmailVerifyCodeService.execute(body.email);
     if (response.isErr()) {
       throw new BadRequestException(response.error.code);
