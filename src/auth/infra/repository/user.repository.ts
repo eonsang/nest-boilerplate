@@ -1,8 +1,7 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable } from '@nestjs/common';
-import { User } from 'prisma/generated';
-import { EmailSignupUser, UserEmail } from 'src/auth/domain/entity';
+import { EmailSignupUser, User, UserEmail } from 'src/auth/domain/entity';
 import { UserRepository } from 'src/auth/domain/repository';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 
@@ -19,5 +18,16 @@ export class UserPrismaRepository implements UserRepository {
       },
     });
     return !!result;
+  }
+
+  async createUser(user: EmailSignupUser) {
+    await Promise.resolve();
+
+    const result = User.create({
+      id: '1',
+      email: user.email.value,
+    });
+    if (result.isErr()) throw new Error('User creation failed');
+    return result.value;
   }
 }

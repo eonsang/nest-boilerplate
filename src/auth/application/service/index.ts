@@ -5,3 +5,4 @@ export * from './findPassword.service';
 export * from './logout.service';
 export * from './sendEmailVerifyCode.service';
 export * from './signup.service';
+export * from './generateJwt.service';

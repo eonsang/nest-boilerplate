@@ -7,5 +7,7 @@ export class EmailSignupDto {
 }
 
 export interface EmailSignupInPort {
-  execute(body: EmailSignupDto): Promise<Result<boolean, AuthError>>;
+  execute(
+    body: EmailSignupDto,
+  ): Promise<Result<{ accessToken: string; refreshToken: string }, AuthError>>;
 }

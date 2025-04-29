@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './presentation/http/rest/auth.controller';
 import { UserPrismaRepository } from './infra/repository/user.repository';
-import { USER_REPOSITORY } from './domain/repository';
+import { AUTH_REPOSITORY, USER_REPOSITORY } from './domain/repository';
 import {
   CheckDuplicateEmailService,
+  GenerateJwtService,
   SendEmailVerifyCodeService,
   SignupService,
 } from './application/service';
@@ -16,6 +17,7 @@ import { AuthRepository } from './infra/repository/auth.repository';
     SendEmailVerifyCodeService,
     CheckDuplicateEmailService,
     SignupService,
+    GenerateJwtService,
 
     {
       provide: USER_REPOSITORY,
@@ -27,6 +29,10 @@ import { AuthRepository } from './infra/repository/auth.repository';
     },
     {
       provide: EMAIL_VERIFICATION_STORE,
+      useClass: AuthRepository,
+    },
+    {
+      provide: AUTH_REPOSITORY,
       useClass: AuthRepository,
     },
   ],
