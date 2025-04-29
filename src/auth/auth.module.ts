@@ -5,6 +5,7 @@ import { USER_REPOSITORY } from './domain/repository';
 import {
   CheckDuplicateEmailService,
   SendEmailVerifyCodeService,
+  SignupService,
 } from './application/service';
 import { EMAIL_SENDER, EMAIL_VERIFICATION_STORE } from './application/port/out';
 import { EmailSender } from './infra/email/emailSender';
@@ -14,6 +15,7 @@ import { AuthRepository } from './infra/repository/auth.repository';
   providers: [
     SendEmailVerifyCodeService,
     CheckDuplicateEmailService,
+    SignupService,
 
     {
       provide: USER_REPOSITORY,
