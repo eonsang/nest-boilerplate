@@ -1,12 +1,16 @@
-import { Result, ok } from 'neverthrow';
+import { Result, err, ok } from 'neverthrow';
+import { UserEmail } from './userEmail';
 
 export class User {
   private constructor(
     readonly id: string,
-    readonly email: string,
+    readonly email: UserEmail,
   ) {}
 
   static create(body: { id: string; email: string }): Result<User, string> {
-    return ok(new User(body.id, body.email));
+    const userEmail = UserEmail.create(body.email);
+    if (userEmail.isErr()) return err('invalid email');
+
+    return ok(new User(body.id, userEmail.value));
   }
 }
