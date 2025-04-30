@@ -39,15 +39,9 @@ export class SendEmailVerifyCodeService {
       return err(AuthError.EXISTS_EMAIL);
     }
 
-    await this.emailVerificationStore.saveVerificationCode(
-      userEmail.value,
-      emailVerifyCode.value,
-    );
+    await this.emailVerificationStore.saveVerificationCode(userEmail.value, emailVerifyCode.value);
 
-    await this.emailSender.sendEmailVerifyCode(
-      userEmail.value,
-      emailVerifyCode.value,
-    );
+    await this.emailSender.sendEmailVerifyCode(userEmail.value, emailVerifyCode.value);
 
     return ok(true);
   }

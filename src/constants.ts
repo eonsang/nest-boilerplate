@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 
 // 비밀번호 전규식
 export const PASSWORD_REGEX =
