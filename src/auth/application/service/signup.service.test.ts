@@ -10,13 +10,14 @@ import { EmailSenderOutPort } from 'src/auth/application/port/out';
 import { AuthRepository } from 'src/auth/domain/repository';
 import { faker } from '@faker-js/faker/.';
 import { generateSecurePassword } from 'src/constants';
+import { JwtModule } from '@nestjs/jwt';
 
 describe('SignupService', () => {
   let service: SignupService;
   let userRepository: jest.Mocked<UserRepository>;
   let emailSender: jest.Mocked<EmailSenderOutPort>;
   let authRepository: jest.Mocked<AuthRepository>;
-  let jwtService: jest.Mocked<GenerateJwtService>;
+  let generateJwtService: jest.Mocked<GenerateJwtService>;
   beforeEach(async () => {
     userRepository = {
       existsByEmail: jest.fn(),
@@ -32,14 +33,20 @@ describe('SignupService', () => {
       saveRefreshToken: jest.fn(),
     };
 
-    jwtService = {
+    generateJwtService = {
       generate: jest.fn(),
-    };
+    } as unknown as jest.Mocked<GenerateJwtService>;
 
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        JwtModule.register({
+          secret: 'test',
+          signOptions: { expiresIn: '1h' },
+        }),
+      ],
       providers: [
         SignupService,
-        { provide: GenerateJwtService, useValue: jwtService },
+        { provide: GenerateJwtService, useValue: generateJwtService },
         { provide: USER_REPOSITORY, useValue: userRepository },
         { provide: EMAIL_SENDER, useValue: emailSender },
         { provide: AUTH_REPOSITORY, useValue: authRepository },
@@ -106,7 +113,7 @@ describe('SignupService', () => {
 
     userRepository.existsByEmail.mockResolvedValue(false);
     userRepository.createUser.mockResolvedValue(mockUser.value);
-    jwtService.generate.mockResolvedValue({
+    generateJwtService.generate.mockResolvedValue({
       refreshToken,
       accessToken,
     });
@@ -126,7 +133,7 @@ describe('SignupService', () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    expect(jwtService.generate).toHaveBeenCalledWith(mockUser.value);
+    expect(generateJwtService.generate).toHaveBeenCalledWith(mockUser.value);
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(authRepository.saveRefreshToken).toHaveBeenCalledWith(mockUser.value, refreshToken);
     // eslint-disable-next-line @typescript-eslint/unbound-method

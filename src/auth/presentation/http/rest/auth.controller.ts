@@ -4,9 +4,11 @@ import {
   SendEmailVerifyCodeService,
   SignupService,
 } from 'src/auth/application/service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EmailSignupDto, CheckDuplicateEmailDto, SendEmailVerifyCodeDto } from './dto';
+import { IsPublicRoute } from 'src/common';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -16,6 +18,7 @@ export class AuthController {
   ) {}
 
   @ApiOperation({ summary: '이메일 중복 확인' })
+  @IsPublicRoute()
   @Get('check-duplicate-email')
   async checkDuplicateEmail(@Query() query: CheckDuplicateEmailDto) {
     const response = await this.checkDuplicateEmailService.execute(query.email);
@@ -27,6 +30,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: '이메일 인증 코드 발송' })
+  @IsPublicRoute()
   @Post('send-email-verify-code')
   async sendEmailVerifyCode(@Body() body: SendEmailVerifyCodeDto) {
     const response = await this.sendEmailVerifyCodeService.execute(body.email);
@@ -38,6 +42,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: '이메일 회원가입' })
+  @IsPublicRoute()
   @Post('signup/email')
   async signupEmail(@Body() body: EmailSignupDto) {
     const response = await this.signupEmailService.execute(body);

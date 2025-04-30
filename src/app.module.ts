@@ -5,6 +5,8 @@ import { CacheModule } from './common/cache/cache.module';
 import { LocalStorageModule } from './common/localStorage/localStorage.module';
 import { HealthCheckModule } from './healthCheck/healthCheck.module';
 import { LoggerModule } from './common/logger/logger.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './common';
 
 @Module({
   imports: [
@@ -17,6 +19,11 @@ import { LoggerModule } from './common/logger/logger.module';
     AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}
