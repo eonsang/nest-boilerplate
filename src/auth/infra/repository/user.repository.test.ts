@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserPrismaRepository } from './user.repository';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import { UserEmail } from 'src/auth/domain/entity';
+import { EmailSignupUser, UserEmail, UserPassword } from 'src/auth/domain/entity';
 import { faker } from '@faker-js/faker/.';
 import { LocalStorageModule } from 'src/common/localStorage/localStorage.module';
+import { generateSecurePassword } from 'src/constants';
 
 describe('UserPrismaRepository', () => {
   let repository: UserPrismaRepository;
@@ -26,7 +27,7 @@ describe('UserPrismaRepository', () => {
   });
 
   describe('existsByEmail', () => {
-    it('이미 가입된 이메일이면 true 를 리턴한다.', async () => {
+    it('should return true if email is registered.', async () => {
       const newEmail = faker.internet.email();
       const userEmail = UserEmail.create(newEmail);
       if (userEmail.isErr()) throw new Error('');
@@ -36,7 +37,7 @@ describe('UserPrismaRepository', () => {
       expect(result).toBe(false);
     });
 
-    it('가입되지 않은 이메일이면 false 를 리턴한다.', async () => {
+    it('should return false if email is not registered.', async () => {
       await prismaService.user.create({
         data: {
           email,
@@ -50,6 +51,26 @@ describe('UserPrismaRepository', () => {
       const result = await repository.existsByEmail(userEmail.value);
 
       expect(result).toBe(true);
+    });
+  });
+
+  describe('createUser', () => {
+    it('should return user if user is created', async () => {
+      const email = UserEmail.create(faker.internet.email());
+      if (email.isErr()) throw new Error('email is err');
+      const password = UserPassword.create(generateSecurePassword());
+      if (password.isErr()) throw new Error('password is err');
+      const signupUser = EmailSignupUser.create({
+        email: email.value,
+        password: password.value,
+      });
+      if (signupUser.isErr()) throw new Error('signupUser is err');
+
+      const result = await repository.createUser(signupUser.value);
+
+      expect(result).toBeDefined();
+      expect(result.id).toBeDefined();
+      expect(result.email.value).toBe(email.value.value);
     });
   });
 });

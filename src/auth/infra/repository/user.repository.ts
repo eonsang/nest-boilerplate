@@ -21,13 +21,18 @@ export class UserPrismaRepository implements UserRepository {
   }
 
   async createUser(user: EmailSignupUser) {
-    await Promise.resolve();
-
-    const result = User.create({
-      id: '1',
-      email: user.email.value,
+    const result = await this.txHost.tx.user.create({
+      data: {
+        email: user.email.value,
+        name: 'Hello',
+      },
     });
-    if (result.isErr()) throw new Error('User creation failed');
-    return result.value;
+
+    const generatedUser = User.create({
+      id: result.id.toString(),
+      email: result.email,
+    });
+    if (generatedUser.isErr()) throw new Error('User creation failed');
+    return generatedUser.value;
   }
 }
