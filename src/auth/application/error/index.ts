@@ -2,10 +2,7 @@ import { Enum, EnumType } from 'ts-jenum';
 
 @Enum('code')
 export class AuthError extends EnumType<AuthError>() {
-  static readonly EXISTS_EMAIL = new AuthError(
-    'EXISTS_EMAIL',
-    '이미 존재하는 이메일입니다.',
-  );
+  static readonly EXISTS_EMAIL = new AuthError('EXISTS_EMAIL', '이미 존재하는 이메일입니다.');
 
   static readonly INVALID_EMAIL = new AuthError(
     'INVALID_EMAIL',

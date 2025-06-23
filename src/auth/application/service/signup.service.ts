@@ -35,6 +35,7 @@ export class SignupService implements EmailSignupInPort {
       email: userEmail.value,
       password: userPassword.value,
     });
+
     if (emailSignupUser.isErr()) return err(AuthError.INVALID_EMAIL);
     const user = await this.userRepository.createUser(emailSignupUser.value);
 
